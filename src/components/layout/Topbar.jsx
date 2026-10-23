@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Menu,
   Search,
@@ -6,6 +7,20 @@ import {
 } from "lucide-react";
 
 function Topbar() {
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("legalAI_user"));
+  } catch (e) {}
+
+  const initials = user?.full_name
+    ? user.full_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "LU";
+
   return (
     <header className="fixed left-64 right-0 top-0 z-30 h-16 border-b border-slate-200 bg-white">
 
@@ -58,15 +73,16 @@ function Topbar() {
           </button>
 
           {/* Profile */}
-          <button className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-slate-100">
-
+          <Link
+            to="/profile"
+            className="flex items-center gap-2 rounded-lg p-1.5 hover:bg-slate-100"
+          >
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-semibold text-blue-900">
-              SS
+              {initials}
             </div>
 
             <ChevronDown size={15} className="text-slate-400" />
-
-          </button>
+          </Link>
 
         </div>
 

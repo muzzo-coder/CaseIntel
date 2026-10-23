@@ -22,6 +22,7 @@ import MultiDocumentAnalysis from "./pages/MultiDocumentAnalysis";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* PROTECTED WORKSPACE */}
         <Route element={<ProtectedRoute />}>

@@ -10,6 +10,7 @@ import {
   UserPlus,
   ShieldCheck,
 } from "lucide-react";
+import api from "../services/api";
 
 function Register() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function Register() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
@@ -49,16 +50,30 @@ function Register() {
 
     setLoading(true);
 
-    // Frontend-only registration for now.
-    // Later this will be connected to the backend API.
-    setTimeout(() => {
+    try {
+      const response = await api.auth.register({
+        name,
+        email,
+        password,
+        confirm_password: confirmPassword,
+      });
+
+      if (response && response.access_token) {
+        localStorage.setItem("legalAI_token", response.access_token);
+        localStorage.setItem("legalAI_user", JSON.stringify(response.user));
+        localStorage.setItem("legalAI_loggedIn", "true");
+      }
+
       setLoading(false);
-      setSuccess("Account created successfully. Redirecting to login...");
+      setSuccess("Account created successfully. Redirecting to workspace...");
 
       setTimeout(() => {
-        navigate("/login");
+        navigate("/dashboard");
       }, 1000);
-    }, 800);
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || "Failed to create account. Please try again.");
+    }
   };
 
   return (

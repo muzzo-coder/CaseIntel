@@ -1,0 +1,33 @@
+[project]
+name = "caseintel-backend"
+version = "0.1.0"
+description = "AI-powered legal document intelligence platform backend"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0,<0.116.0",
+    "uvicorn[standard]>=0.32.0,<0.33.0",
+    "pydantic>=2.10.0,<3.0.0",
+    "pydantic-settings>=2.7.0,<3.0.0",
+    "sqlalchemy>=2.0.36,<3.0.0",
+    "alembic>=1.14.0,<2.0.0",
+    "psycopg[binary]>=3.2.0,<4.0.0",
+    "python-dotenv>=1.0.1,<2.0.0",
+    "email-validator>=2.2.0,<3.0.0",
+    "bcrypt>=4.2.0,<5.0.0",
+    "pyjwt>=2.9.0,<3.0.0",
+    "python-multipart>=0.0.18,<1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0,<9.0.0",
+    "httpx>=0.28.0,<1.0.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"

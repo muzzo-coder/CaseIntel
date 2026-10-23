@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Settings as SettingsIcon,
   Bell,
@@ -6,9 +7,60 @@ import {
   Brain,
   Database,
   Save,
+  LockKeyhole,
+  CheckCircle2,
+  AlertCircle,
+  X,
 } from "lucide-react";
+import api from "../services/api";
 
 function Settings() {
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [pwLoading, setPwLoading] = useState(false);
+  const [pwError, setPwError] = useState("");
+  const [pwSuccess, setPwSuccess] = useState("");
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPwError("");
+    setPwSuccess("");
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      setPwError("Please fill in all fields.");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setPwError("New passwords do not match.");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPwError("New password must be at least 6 characters.");
+      return;
+    }
+
+    setPwLoading(true);
+    try {
+      await api.auth.changePassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+        confirm_new_password: confirmNewPassword,
+      });
+      setPwSuccess("Password changed successfully.");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setTimeout(() => setShowPasswordModal(false), 1500);
+    } catch (err) {
+      setPwError(err.message || "Failed to change password.");
+    } finally {
+      setPwLoading(false);
+    }
+  };
   return (
     <div className="min-h-screen bg-slate-50 px-6 py-8 lg:px-10">
       {/* Header */}
@@ -171,7 +223,15 @@ function Settings() {
             title="Password"
             description="Change your account password."
           >
-            <button className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+            <button
+              type="button"
+              onClick={() => {
+                setShowPasswordModal(true);
+                setPwError("");
+                setPwSuccess("");
+              }}
+              className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
               Change Password
             </button>
           </SettingRow>
@@ -204,6 +264,101 @@ function Settings() {
           </p>
         </div>
       </div>
+
+      {/* Change Password Modal */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <h3 className="text-lg font-bold text-slate-900">
+                Change Password
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowPasswordModal(false)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {pwSuccess && (
+              <div className="mt-4 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800">
+                <CheckCircle2 size={18} className="shrink-0 text-green-600" />
+                <span>{pwSuccess}</span>
+              </div>
+            )}
+
+            {pwError && (
+              <div className="mt-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                <AlertCircle size={18} className="shrink-0 text-red-600" />
+                <span>{pwError}</span>
+              </div>
+            )}
+
+            {!pwSuccess && (
+              <form onSubmit={handleChangePassword} className="mt-4 space-y-4">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-600">
+                    Current Password
+                  </label>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full rounded-lg border border-slate-300 p-2.5 text-sm outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-100"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-600">
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full rounded-lg border border-slate-300 p-2.5 text-sm outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-100"
+                    placeholder="Minimum 6 characters"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-600">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    className="w-full rounded-lg border border-slate-300 p-2.5 text-sm outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-100"
+                    required
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordModal(false)}
+                    className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={pwLoading}
+                    className="rounded-lg bg-blue-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 disabled:opacity-60"
+                  >
+                    {pwLoading ? "Updating..." : "Update Password"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

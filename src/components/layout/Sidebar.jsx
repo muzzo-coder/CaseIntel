@@ -19,10 +19,33 @@ import {
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
-
+import api from "../../services/api";
 
 function Sidebar() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("legalAI_user"));
+  } catch (e) {}
+
+  const displayName = user?.full_name || "Legal User";
+  const displayRole = user?.role
+    ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+    : "Legal Workspace";
+  const initials = user?.full_name
+    ? user.full_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "LU";
+
+  const handleLogout = async () => {
+    await api.auth.logout();
+    navigate("/login");
+  };
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-slate-200 bg-white">
 
@@ -155,15 +178,15 @@ function Sidebar() {
         <div className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-50">
 
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-900">
-            SS
+            {initials}
           </div>
 
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-slate-800">
-              User
+              {displayName}
             </p>
             <p className="truncate text-xs text-slate-500">
-              Legal Workspace
+              {displayRole}
             </p>
           </div>
 
@@ -172,10 +195,7 @@ function Sidebar() {
         </div>
 
        <button
-  onClick={() => {
-    localStorage.removeItem("legalAI_loggedIn");
-    navigate("/login");
-  }}
+  onClick={handleLogout}
   className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-600 transition hover:bg-red-50 hover:text-red-700"
 >
   <LogOut size={18} />

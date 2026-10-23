@@ -8,7 +8,10 @@ import {
   LockKeyhole,
   ArrowRight,
   ShieldCheck,
+  X,
+  CheckCircle2,
 } from "lucide-react";
+import api from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
@@ -19,7 +22,14 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  // Forgot password modal state
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState("");
+  const [forgotError, setForgotError] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -30,13 +40,42 @@ function Login() {
 
     setLoading(true);
 
-    // Frontend-only login for now.
-    // Later this will be replaced with the backend API.
-    setTimeout(() => {
-      localStorage.setItem("legalAI_loggedIn", "true");
+    try {
+      const response = await api.auth.login({ email, password });
+      if (response && response.access_token) {
+        localStorage.setItem("legalAI_token", response.access_token);
+        localStorage.setItem("legalAI_user", JSON.stringify(response.user));
+        localStorage.setItem("legalAI_loggedIn", "true");
+      }
       setLoading(false);
       navigate("/dashboard");
-    }, 800);
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || "Failed to sign in. Please verify your credentials.");
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setForgotError("");
+    setForgotMessage("");
+
+    if (!forgotEmail) {
+      setForgotError("Please enter your registered email address.");
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      const response = await api.auth.forgotPassword(forgotEmail);
+      setForgotLoading(false);
+      setForgotMessage(
+        response.message || "Password reset instructions have been sent to your email."
+      );
+    } catch (err) {
+      setForgotLoading(false);
+      setForgotError(err.message || "Failed to request password reset.");
+    }
   };
 
   return (
@@ -174,6 +213,11 @@ function Login() {
 
                     <button
                       type="button"
+                      onClick={() => {
+                        setShowForgotModal(true);
+                        setForgotMessage("");
+                        setForgotError("");
+                      }}
                       className="text-xs font-medium text-blue-900 hover:text-blue-700"
                     >
                       Forgot password?
@@ -260,6 +304,96 @@ function Login() {
 
         </div>
       </main>
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <h3 className="text-lg font-bold text-slate-900">
+                Reset Your Password
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(false)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <p className="mt-3 text-sm text-slate-600">
+              Enter your registered email address and we'll send you instructions to reset your password.
+            </p>
+
+            {forgotMessage && (
+              <div className="mt-4 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800">
+                <CheckCircle2 size={18} className="shrink-0 text-green-600" />
+                <span>{forgotMessage}</span>
+              </div>
+            )}
+
+            {forgotError && (
+              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                {forgotError}
+              </div>
+            )}
+
+            {!forgotMessage && (
+              <form onSubmit={handleForgotPassword} className="mt-4 space-y-4">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail
+                      size={18}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
+                    <input
+                      type="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      placeholder="lawyer@example.com"
+                      className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-700 focus:ring-2 focus:ring-blue-100"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotModal(false)}
+                    className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="rounded-lg bg-blue-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 disabled:opacity-60"
+                  >
+                    {forgotLoading ? "Sending..." : "Send Reset Link"}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {forgotMessage && (
+              <div className="mt-6 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(false)}
+                  className="rounded-lg bg-blue-900 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800"
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
