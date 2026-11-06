@@ -1,21 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Scale,
-  Eye,
-  EyeOff,
-  Mail,
-  LockKeyhole,
-  ArrowRight,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowRight, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import GoldSeal from "../components/ui/GoldSeal";
+import DemoTag from "../components/ui/DemoTag";
 
-function Login() {
+export default function Login() {
   const navigate = useNavigate();
-
+  const [email, setEmail] = useState("counsel@caseintel.law");
+  const [password, setPassword] = useState("password123");
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -24,244 +17,200 @@ function Login() {
     setError("");
 
     if (!email || !password) {
-      setError("Please enter your email and password.");
+      setError("Please enter your registered email address and credentials.");
       return;
     }
 
     setLoading(true);
-
-    // Frontend-only login for now.
-    // Later this will be replaced with the backend API.
     setTimeout(() => {
       localStorage.setItem("legalAI_loggedIn", "true");
       setLoading(false);
-      navigate("/dashboard");
-    }, 800);
+      navigate("/app/dashboard");
+    }, 400);
+  };
+
+  const handleFillDemo = () => {
+    setEmail("counsel@caseintel.law");
+    setPassword("matter-ci-2026");
+    setError("");
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* ─── Left Panel: 50% Black Surface ───────────────────────────────── */}
+      <div className="surface-black w-full lg:w-1/2 p-8 lg:p-16 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[var(--ink-700)]">
+        <div>
+          {/* Brand header */}
+          <Link to="/" className="flex items-center gap-3 group inline-flex">
+            <GoldSeal size={32} />
+            <div className="flex flex-col">
+              <span className="font-display text-xl font-semibold tracking-wide text-[var(--paper-0)]">
+                CaseIntel
+              </span>
+              <span className="case-id text-[10px] tracking-wider text-[var(--gold-400)] -mt-1">
+                LEGAL INTELLIGENCE
+              </span>
+            </div>
+          </Link>
 
-      {/* Header */}
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <div className="mt-16 lg:mt-24 max-w-lg">
+            <span className="meta-label on-black text-[11px] text-[var(--gold-400)]">
+              MATTER WORKSPACE ACCESS
+            </span>
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[var(--paper-0)] mt-3 leading-[1.15]">
+              Evidentiary rigor for complex litigation.
+            </h1>
+            <p className="font-doc text-base text-[var(--ink-300)] mt-6 leading-relaxed">
+              Log in to review cross-document contradictions, explore char-grounded timelines, and prepare court-ready briefs with zero probabilistic drift.
+            </p>
 
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-900 text-white">
-              <Scale size={22} />
+            {/* Matter dossier badge */}
+            <div className="mt-10 rounded border border-[var(--ink-800)] bg-[var(--ink-900)] p-4 shadow-on-black max-w-md">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--ink-800)] text-xs">
+                <span className="case-id text-[11px] text-[var(--gold-400)]">ACTIVE DOSSIER</span>
+                <DemoTag />
+              </div>
+              <div className="mt-2 text-sm font-medium text-[var(--paper-0)]">
+                Sharma v. Regional Bank of Delhi
+              </div>
+              <div className="mt-1 text-xs text-[var(--ink-400)] flex items-center justify-between">
+                <span>Delhi High Court · Commercial Appellate</span>
+                <span className="text-[var(--gold-400)] font-mono">5 Findings</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Security badge at bottom */}
+        <div className="mt-12 pt-6 border-t border-[var(--ink-800)] flex items-center gap-2 text-xs text-[var(--ink-400)]">
+          <ShieldCheck size={16} className="text-[var(--gold-400)]" />
+          <span>FIPS 140-3 Compliant Session · Deterministic Audit Trail</span>
+        </div>
+      </div>
+
+      {/* ─── Right Panel: 50% Paper White Surface ───────────────────────── */}
+      <div className="surface-white w-full lg:w-1/2 p-8 lg:p-16 flex flex-col justify-between bg-[var(--paper-50)]">
+        <div className="flex justify-end">
+          <Link
+            to="/register"
+            className="text-xs uppercase tracking-wider text-[var(--paper-700)] hover:text-[var(--paper-900)] transition-colors"
+          >
+            Need an account? <span className="font-semibold text-[var(--gold-600)] underline">Register</span>
+          </Link>
+        </div>
+
+        <div className="max-w-md w-full mx-auto my-auto py-12">
+          <div className="mb-8">
+            <h2 className="font-display text-2xl sm:text-3xl font-medium tracking-tight text-[var(--paper-900)]">
+              Sign in to CaseIntel
+            </h2>
+            <p className="mt-2 text-xs text-[var(--paper-500)]">
+              Enter your credentials to access active client matters and verified evidence.
+            </p>
+          </div>
+
+          {error && (
+            <div className="mb-6 rounded border border-[var(--state-error-text)] bg-[var(--state-error-bg)] p-3 text-xs text-[var(--state-error-text)]">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="meta-label block mb-1.5" htmlFor="email">
+                Bar / Institutional Email
+              </label>
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input-base text-sm"
+                  placeholder="counsel@chambers.law"
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <h1 className="text-lg font-bold text-slate-900">
-                Legal AI Workspace
-              </h1>
-
-              <p className="text-xs text-slate-500">
-                Intelligent Legal Assistance
-              </p>
-            </div>
-          </Link>
-
-          <Link
-            to="/register"
-            className="text-sm font-semibold text-blue-900 hover:text-blue-700"
-          >
-            Create Account
-          </Link>
-
-        </div>
-      </header>
-
-      {/* Main */}
-      <main className="flex min-h-[calc(100vh-73px)] items-center justify-center px-6 py-12">
-
-        <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:grid-cols-2">
-
-          {/* Left Information Panel */}
-          <div className="hidden bg-blue-900 p-10 text-white lg:block">
-
-            <div className="flex h-full flex-col justify-between">
-
-              <div>
-                <div className="mb-8 inline-flex rounded-xl bg-white/10 p-3">
-                  <ShieldCheck size={28} />
-                </div>
-
-                <h2 className="text-3xl font-bold leading-tight">
-                  Welcome back to your Legal AI Workspace.
-                </h2>
-
-                <p className="mt-5 leading-7 text-blue-100">
-                  Access your legal documents, AI assistance, research,
-                  analysis and reports from one secure workspace.
-                </p>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="meta-label" htmlFor="password">
+                  Security Passphrase
+                </label>
+                <a
+                  href="#reset"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert("Demo environment: Use 'password123' to log in.");
+                  }}
+                  className="text-[11px] text-[var(--gold-600)] hover:underline"
+                >
+                  Forgot passphrase?
+                </a>
               </div>
-
-              <div className="mt-10 space-y-4">
-
-                <div className="flex items-center gap-3 text-sm text-blue-100">
-                  <ShieldCheck size={18} />
-                  AI-assisted legal analysis
-                </div>
-
-                <div className="flex items-center gap-3 text-sm text-blue-100">
-                  <ShieldCheck size={18} />
-                  Document intelligence
-                </div>
-
-                <div className="flex items-center gap-3 text-sm text-blue-100">
-                  <ShieldCheck size={18} />
-                  Legal research and verification
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-
-          {/* Login Form */}
-          <div className="p-8 sm:p-10">
-
-            <div className="mx-auto max-w-md">
-
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-slate-900">
-                  Sign in
-                </h2>
-
-                <p className="mt-2 text-sm text-slate-500">
-                  Sign in to continue to your Legal AI Workspace.
-                </p>
-              </div>
-
-              {/* Error */}
-              {error && (
-                <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-
-                {/* Email */}
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-slate-700">
-                    Email Address
-                  </label>
-
-                  <div className="relative">
-                    <Mail
-                      size={18}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                    />
-
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
-                      className="w-full rounded-lg border border-slate-300 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-700 focus:ring-2 focus:ring-blue-100"
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-medium text-slate-700">
-                      Password
-                    </label>
-
-                    <button
-                      type="button"
-                      className="text-xs font-medium text-blue-900 hover:text-blue-700"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
-
-                  <div className="relative">
-                    <LockKeyhole
-                      size={18}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                    />
-
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Enter your password"
-                      className="w-full rounded-lg border border-slate-300 py-3 pl-10 pr-11 text-sm outline-none transition focus:border-blue-700 focus:ring-2 focus:ring-blue-100"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Remember */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    className="h-4 w-4 rounded border-slate-300"
-                  />
-
-                  <label
-                    htmlFor="remember"
-                    className="text-sm text-slate-600"
-                  >
-                    Remember me
-                  </label>
-                </div>
-
-                {/* Submit */}
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-base text-sm pr-10"
+                  placeholder="••••••••••••"
+                  required
+                />
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--paper-500)] hover:text-[var(--paper-700)]"
+                  aria-label="Toggle password visibility"
                 >
-                  {loading ? "Signing in..." : "Sign In"}
-
-                  {!loading && <ArrowRight size={18} />}
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
-
-              </form>
-
-              {/* Register */}
-              <p className="mt-7 text-center text-sm text-slate-500">
-                Don't have an account?{" "}
-                <Link
-                  to="/register"
-                  className="font-semibold text-blue-900 hover:text-blue-700"
-                >
-                  Create an account
-                </Link>
-              </p>
-
-              {/* Disclaimer */}
-              <p className="mt-8 text-center text-xs leading-5 text-slate-400">
-                AI-generated information is provided for informational
-                purposes and should be reviewed by a qualified legal
-                professional.
-              </p>
-
+              </div>
             </div>
-          </div>
 
+            <div className="flex items-center justify-between text-xs pt-1">
+              <label className="flex items-center gap-2 cursor-pointer text-[var(--paper-700)]">
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  className="rounded border-[var(--paper-300)] text-[var(--ink-950)] focus:ring-[var(--gold-500)]"
+                />
+                <span>Keep workstation authorized for 8 hours</span>
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary w-full justify-center py-2.5 text-xs uppercase tracking-wider"
+            >
+              {loading ? "Authenticating Session..." : "Access Matter Workspace"}
+              {!loading && <ArrowRight size={13} />}
+            </button>
+          </form>
+
+          {/* Quick Demo Login Fill */}
+          <div className="mt-6 pt-6 border-t border-[var(--paper-200)] text-center">
+            <button
+              type="button"
+              onClick={handleFillDemo}
+              className="text-xs text-[var(--gold-600)] hover:text-[var(--gold-500)] font-mono underline inline-flex items-center gap-1.5"
+            >
+              <GoldSeal size={14} />
+              Fill Demo Credentials (Sharma v. Bank)
+            </button>
+          </div>
         </div>
-      </main>
+
+        {/* Footer legal disclaimer */}
+        <div className="pt-6 border-t border-[var(--paper-200)] text-center">
+          <p className="text-[10px] text-[var(--paper-500)]">
+            CaseIntel is a research and review aid, NOT legal advice.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
-
-export default Login;

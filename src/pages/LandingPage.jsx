@@ -1,265 +1,369 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
-  ShieldCheck,
-  FileSearch,
-  Brain,
+  ArrowUpRight,
+  Play,
   Scale,
-  ArrowRight,
-  CheckCircle2,
+  ShieldCheck,
+  FileText,
+  Users,
+  CalendarDays,
+  AlertTriangle,
 } from "lucide-react";
 
-function LandingPage() {
-  return (
-    <div className="min-h-screen bg-white text-slate-900">
+export default function LandingPage() {
+  const navigate = useNavigate();
 
-      {/* Navbar */}
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-[#08090C] text-white">
+
+      {/* =====================================================
+          TOP HEADER
+      ===================================================== */}
+      <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-6">
+
+          {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-900 text-white">
-              <Scale size={22} />
-            </div>
+
+            <Scale
+              size={30}
+              strokeWidth={1.5}
+              className="text-[#d8ae62]"
+            />
 
             <div>
-              <h1 className="text-lg font-bold text-slate-900">
-                Legal AI Workspace
-              </h1>
-              <p className="text-xs text-slate-500">
-                Intelligent Legal Assistance
-              </p>
+              <span className="font-serif text-lg tracking-wide">
+                CASEINTEL
+              </span>
+
+              <span className="block text-[8px] uppercase tracking-[0.18em] text-[#d8ae62]">
+                AI-First Legal Intelligence
+              </span>
             </div>
+
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link
-              to="/login"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-            >
-              Login
-            </Link>
 
-            <Link
-              to="/register"
-              className="rounded-lg bg-blue-900 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800"
-            >
-              Get Started
-            </Link>
-          </div>
+          {/* Header Button */}
+          <button
+            onClick={() => navigate("/app/dashboard")}
+            className="rounded-full bg-[#d8ae62] px-6 py-2.5 text-xs font-semibold text-black transition hover:bg-white"
+          >
+            Enter Dashboard
+          </button>
 
         </div>
       </header>
 
-      {/* Hero Section */}
-      <main>
-        <section className="bg-slate-50">
-          <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
 
-            <div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-900">
-                <ShieldCheck size={16} />
-                AI-Powered Legal Assistance
-              </div>
+      {/* =====================================================
+          FULL SCREEN VIDEO HERO
+      ===================================================== */}
+      <section className="relative flex min-h-screen items-center overflow-hidden pt-16">
 
-              <h2 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-slate-900 md:text-5xl">
-                Smarter Legal Analysis.
-                <span className="block text-blue-900">
-                  Faster Legal Decisions.
-                </span>
-              </h2>
+        {/* ---------------------------------------------------
+            BACKGROUND VIDEO
+        --------------------------------------------------- */}
+        <div className="absolute inset-0">
 
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                Legal AI Workspace helps users analyze legal documents,
-                research legal information, identify risks, and understand
-                complex legal content using intelligent AI assistance.
-              </p>
+          <video
+            className="h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          >
+            <source
+              src="/caseintel-law-hero.mp4"
+              type="video/mp4"
+            />
+          </video>
 
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 rounded-lg bg-blue-900 px-6 py-3 font-semibold text-white shadow-sm hover:bg-blue-800"
-                >
-                  Get Started
-                  <ArrowRight size={18} />
-                </Link>
 
-                <Link
-                  to="/login"
-                  className="rounded-lg border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 hover:bg-slate-50"
-                >
-                  Sign In
-                </Link>
-              </div>
+          {/* Overall dark overlay */}
+          <div className="absolute inset-0 bg-black/45" />
 
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <CheckCircle2 size={18} className="text-green-600" />
-                  Document Analysis
-                </div>
 
-                <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <CheckCircle2 size={18} className="text-green-600" />
-                  Legal Research
-                </div>
+          {/* Strong left gradient for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/75 to-black/20" />
 
-                <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <CheckCircle2 size={18} className="text-green-600" />
-                  Risk Analysis
-                </div>
 
-                <div className="flex items-center gap-2 text-sm text-slate-600">
-                  <CheckCircle2 size={18} className="text-green-600" />
-                  AI Legal Assistant
-                </div>
-              </div>
-            </div>
+          {/* Bottom cinematic fade */}
+          <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black to-transparent" />
 
-            {/* Hero Preview */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="mb-5 flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">
-                    Legal AI Workspace
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    AI-powered legal analysis
-                  </p>
-                </div>
+        </div>
 
-                <div className="rounded-lg bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                  System Ready
-                </div>
-              </div>
 
-              <div className="space-y-4">
+        {/* ---------------------------------------------------
+            HERO CONTENT
+        --------------------------------------------------- */}
+        <div className="relative z-10 mx-auto w-full max-w-[1500px] px-6 py-24 lg:px-12">
 
-                <div className="rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-lg bg-blue-50 p-2 text-blue-900">
-                      <Brain size={20} />
-                    </div>
+          <div className="max-w-3xl">
 
-                    <div>
-                      <p className="text-sm font-semibold">
-                        AI Legal Assistant
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        Ask questions and receive AI-assisted responses
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            {/* Small Label */}
+            <div className="mb-7 flex items-center gap-3">
 
-                <div className="rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-lg bg-blue-50 p-2 text-blue-900">
-                      <FileSearch size={20} />
-                    </div>
+              <span className="h-px w-12 bg-[#d8ae62]" />
 
-                    <div>
-                      <p className="text-sm font-semibold">
-                        Document Intelligence
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        Analyze clauses, risks and important information
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-slate-200 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-lg bg-blue-50 p-2 text-blue-900">
-                      <ShieldCheck size={20} />
-                    </div>
-
-                    <div>
-                      <p className="text-sm font-semibold">
-                        Verification & Risk
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        Review sources and identify potential legal risks
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* Features */}
-        <section className="border-t border-slate-200 bg-white">
-          <div className="mx-auto max-w-7xl px-6 py-16">
-
-            <div className="mx-auto max-w-2xl text-center">
-              <h3 className="text-3xl font-bold text-slate-900">
-                One Workspace for Legal Intelligence
-              </h3>
-
-              <p className="mt-4 text-slate-600">
-                Bring document analysis, legal research and AI assistance
-                together in one professional workspace.
-              </p>
-            </div>
-
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-
-              <FeatureCard
-                icon={<FileSearch size={22} />}
-                title="Document Analysis"
-                description="Upload legal documents and identify important clauses, risks and key information."
-              />
-
-              <FeatureCard
-                icon={<Brain size={22} />}
-                title="AI Legal Assistant"
-                description="Interact with an AI assistant to ask questions and understand legal information."
-              />
-
-              <FeatureCard
-                icon={<ShieldCheck size={22} />}
-                title="Verified Insights"
-                description="Review citations, verification status and confidence information for AI-generated responses."
-              />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-[#d8ae62]">
+                Investigation Command Center
+              </span>
 
             </div>
-          </div>
-        </section>
 
-        {/* Disclaimer */}
-        <section className="border-t border-slate-200 bg-slate-50">
-          <div className="mx-auto max-w-7xl px-6 py-8">
-            <p className="text-center text-xs leading-5 text-slate-500">
-              AI-generated information is provided for informational purposes
-              and should be reviewed by a qualified legal professional.
+
+            {/* Main Heading */}
+            <h1 className="font-serif text-5xl leading-[0.98] tracking-[-0.03em] text-white sm:text-6xl lg:text-8xl">
+
+              Every fact
+
+              <br />
+
+              <span className="text-[#d8ae62]">
+                grounded.
+              </span>
+
+              <br />
+
+              Every discrepancy
+
+              <br />
+
+              <span className="text-white/90">
+                verified.
+              </span>
+
+            </h1>
+
+
+            {/* Description */}
+            <p className="mt-8 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
+              CaseIntel transforms complex legal documents into
+              verifiable intelligence — connecting evidence,
+              entities, events, timelines and contradictions
+              with source-grounded citations.
             </p>
-          </div>
-        </section>
 
-      </main>
+
+            {/* Buttons */}
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+
+              {/* Primary */}
+              <button
+                onClick={() => navigate("/login")}
+                className="group flex items-center justify-center gap-3 rounded-full bg-[#d8ae62] px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-black shadow-xl shadow-black/20 transition-all duration-300 hover:bg-white"
+              >
+                Open Matter Workspace
+
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
+                />
+              </button>
+
+
+              {/* Secondary */}
+              <button
+                onClick={() => navigate("/login")}
+                className="flex items-center justify-center gap-3 rounded-full border border-white/25 bg-white/5 px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md transition-all duration-300 hover:border-[#d8ae62] hover:bg-white/10"
+              >
+
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/30">
+                  <Play
+                    size={11}
+                    fill="currentColor"
+                  />
+                </span>
+
+                Review Demo Matter
+
+              </button>
+
+            </div>
+
+
+            {/* Feature row */}
+            <div className="mt-12 grid max-w-2xl grid-cols-1 gap-6 border-t border-white/15 pt-7 sm:grid-cols-3">
+
+              {/* Feature 1 */}
+              <div>
+
+                <div className="mb-2 flex items-center gap-2">
+
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#d8ae62]" />
+
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-white/40">
+                    Grounding
+                  </span>
+
+                </div>
+
+                <p className="text-xs text-white/75">
+                  Verifiable Span Grounding
+                </p>
+
+              </div>
+
+
+              {/* Feature 2 */}
+              <div>
+
+                <div className="mb-2 flex items-center gap-2">
+
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#d8ae62]" />
+
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-white/40">
+                    Accuracy
+                  </span>
+
+                </div>
+
+                <p className="text-xs text-white/75">
+                  Zero Hallucination Tolerance
+                </p>
+
+              </div>
+
+
+              {/* Feature 3 */}
+              <div>
+
+                <div className="mb-2 flex items-center gap-2">
+
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#d8ae62]" />
+
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-white/40">
+                    Audit
+                  </span>
+
+                </div>
+
+                <p className="text-xs text-white/75">
+                  Deterministic Audit Trail
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* =================================================
+            LIVE STATUS
+        ================================================= */}
+        <div className="absolute right-6 top-24 z-20 hidden lg:block">
+
+          <div className="rounded-full border border-white/15 bg-black/50 px-4 py-2 backdrop-blur-md">
+
+            <div className="flex items-center gap-2">
+
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#d8ae62]" />
+
+              <span className="text-[9px] uppercase tracking-[0.22em] text-white/70">
+                Intelligence Engine Active
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          METRICS
+      ===================================================== */}
+      <section className="relative z-20 bg-black px-6 py-10">
+
+        <div className="mx-auto grid max-w-[1450px] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-md sm:grid-cols-2 lg:grid-cols-5 lg:divide-x lg:divide-white/10">
+
+          <Metric
+            icon={FileText}
+            number="24"
+            label="Documents"
+            growth="12%"
+          />
+
+          <Metric
+            icon={Users}
+            number="148"
+            label="Entities"
+            growth="8%"
+          />
+
+          <Metric
+            icon={CalendarDays}
+            number="67"
+            label="Events"
+            growth="15%"
+          />
+
+          <Metric
+            icon={AlertTriangle}
+            number="09"
+            label="Findings"
+            growth="0%"
+          />
+
+          <Metric
+            icon={ShieldCheck}
+            number="94%"
+            label="Verification Rate"
+          />
+
+        </div>
+
+      </section>
+
     </div>
   );
 }
 
-function FeatureCard({ icon, title, description }) {
+
+/* =========================================================
+   METRIC COMPONENT
+========================================================= */
+
+function Metric({ icon: Icon, number, label, growth }) {
+
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-4 inline-flex rounded-lg bg-blue-50 p-3 text-blue-900">
-        {icon}
+    <div className="flex items-center gap-4 p-6">
+
+      <Icon
+        size={27}
+        strokeWidth={1.5}
+        className="text-[#d8ae62]"
+      />
+
+      <div>
+
+        <div className="flex items-center gap-2">
+
+          <span className="font-serif text-2xl text-white">
+            {number}
+          </span>
+
+          {growth && (
+            <span className="text-[10px] text-green-400">
+              ↑ {growth}
+            </span>
+          )}
+
+        </div>
+
+        <p className="text-[9px] uppercase tracking-widest text-white/50">
+          {label}
+        </p>
+
       </div>
 
-      <h4 className="text-lg font-semibold text-slate-900">
-        {title}
-      </h4>
-
-      <p className="mt-2 text-sm leading-6 text-slate-600">
-        {description}
-      </p>
     </div>
   );
 }
-
-export default LandingPage;

@@ -1,279 +1,306 @@
+/**
+ * Settings — §21 / System Preferences (/app/settings)
+ * Sections: Appearance, Data, Notifications, Quality.
+ * No billing/RBAC/org fields shown.
+ */
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
-  Settings as SettingsIcon,
+  Sliders,
+  ShieldAlert,
   Bell,
-  ShieldCheck,
-  Palette,
-  Brain,
-  Database,
-  Save,
-} from "lucide-react";
+  BarChart2,
+  Trash2,
+  Check,
+  ArrowRight,
+} from 'lucide-react';
+import { useMatter } from '../context/MatterContext';
+import { MOCK_MATTER } from '../mocks/data';
+import DemoTag from '../components/ui/DemoTag';
 
-function Settings() {
+export default function Settings() {
+  const { activeMatter = MOCK_MATTER } = useMatter() || {};
+  const matter = activeMatter || MOCK_MATTER;
+
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
+  const [textSize, setTextSize] = useState('medium'); // 'small' | 'medium' | 'large'
+  const [notifyPipeline, setNotifyPipeline] = useState(true);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [dataDeleted, setDataDeleted] = useState(false);
+
+  const handleDeleteData = () => {
+    setDataDeleted(true);
+    setDeleteConfirmOpen(false);
+    setTimeout(() => setDataDeleted(false), 3000);
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-8 lg:px-10">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-slate-900">
-          Settings
-        </h1>
-
-        <p className="mt-1 text-sm text-slate-500">
-          Manage your Legal AI Workspace preferences and system settings.
-        </p>
-      </div>
-
-      <div className="mx-auto max-w-5xl space-y-6">
-        {/* General Settings */}
-        <SettingSection
-          icon={<SettingsIcon size={19} />}
-          title="General Settings"
-          description="Configure your basic workspace preferences."
-        >
-          <SettingRow
-            title="Workspace Name"
-            description="Name displayed throughout the workspace."
-          >
-            <input
-              type="text"
-              defaultValue="Legal AI Workspace"
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-500 sm:w-72"
-            />
-          </SettingRow>
-
-          <SettingRow
-            title="Language"
-            description="Select the language used in the workspace."
-          >
-            <select className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-500 sm:w-72">
-              <option>English</option>
-              <option>Hindi</option>
-              <option>Marathi</option>
-            </select>
-          </SettingRow>
-        </SettingSection>
-
-        {/* Notifications */}
-        <SettingSection
-          icon={<Bell size={19} />}
-          title="Notifications"
-          description="Choose which workspace notifications you want to receive."
-        >
-          <ToggleRow
-            title="Document Processing"
-            description="Notify when document processing is completed."
-            enabled
-          />
-
-          <ToggleRow
-            title="AI Analysis Completed"
-            description="Notify when AI analysis is ready for review."
-            enabled
-          />
-
-          <ToggleRow
-            title="System Notifications"
-            description="Receive important workspace and system updates."
-            enabled
-          />
-        </SettingSection>
-
-        {/* AI Preferences */}
-        <SettingSection
-          icon={<Brain size={19} />}
-          title="AI Preferences"
-          description="Configure how AI-assisted analysis is presented."
-        >
-          <SettingRow
-            title="Response Detail"
-            description="Choose the level of detail in AI responses."
-          >
-            <select className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-500 sm:w-72">
-              <option>Balanced</option>
-              <option>Concise</option>
-              <option>Detailed</option>
-            </select>
-          </SettingRow>
-
-          <ToggleRow
-            title="Show Verification Status"
-            description="Display verification information with AI-generated results."
-            enabled
-          />
-
-          <ToggleRow
-            title="Show Confidence Information"
-            description="Display confidence indicators where available."
-            enabled
-          />
-        </SettingSection>
-
-        {/* Appearance */}
-        <SettingSection
-          icon={<Palette size={19} />}
-          title="Appearance"
-          description="Customize the visual appearance of the workspace."
-        >
-          <SettingRow
-            title="Theme"
-            description="Select your preferred workspace theme."
-          >
-            <select className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-500 sm:w-72">
-              <option>Light</option>
-              <option>Dark</option>
-              <option>System Default</option>
-            </select>
-          </SettingRow>
-
-          <ToggleRow
-            title="Compact Layout"
-            description="Use a more compact layout for workspace content."
-          />
-        </SettingSection>
-
-        {/* Data & Privacy */}
-        <SettingSection
-          icon={<Database size={19} />}
-          title="Data & Privacy"
-          description="Manage document and workspace data preferences."
-        >
-          <ToggleRow
-            title="Conversation History"
-            description="Save conversations so they can be accessed later."
-            enabled
-          />
-
-          <ToggleRow
-            title="Document Analysis History"
-            description="Keep records of completed document analyses."
-            enabled
-          />
-
-          <div className="rounded-lg border border-amber-100 bg-amber-50 p-4">
-            <p className="text-sm font-semibold text-amber-900">
-              Important
-            </p>
-
-            <p className="mt-1 text-xs leading-5 text-amber-800">
-              Avoid uploading unnecessary personal, confidential, or highly
-              sensitive information. Data handling and retention will depend on
-              the final backend and deployment configuration.
-            </p>
-          </div>
-        </SettingSection>
-
-        {/* Security */}
-        <SettingSection
-          icon={<ShieldCheck size={19} />}
-          title="Security"
-          description="Manage account security options."
-        >
-          <SettingRow
-            title="Password"
-            description="Change your account password."
-          >
-            <button className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
-              Change Password
-            </button>
-          </SettingRow>
-
-          <SettingRow
-            title="Two-Factor Authentication"
-            description="Add an additional layer of account protection."
-          >
-            <button className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
-              Configure
-            </button>
-          </SettingRow>
-        </SettingSection>
-
-        {/* Save */}
-        <div className="flex justify-end pb-8">
-          <button className="inline-flex items-center gap-2 rounded-lg bg-blue-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-800">
-            <Save size={17} />
-            Save Settings
-          </button>
-        </div>
-
-        {/* Disclaimer */}
-        <div className="rounded-xl border border-blue-100 bg-blue-50 px-5 py-4">
-          <p className="text-xs leading-5 text-blue-900">
-            <span className="font-semibold">Legal AI Notice:</span>{" "}
-            Settings control the behavior and presentation of the workspace.
-            AI-generated legal information should always be independently
-            reviewed before being relied upon.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SettingSection({ icon, title, description, children }) {
-  return (
-    <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-start gap-3 border-b border-slate-100 p-6">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-800">
-          {icon}
-        </div>
-
-        <div>
-          <h2 className="text-base font-semibold text-slate-900">
-            {title}
-          </h2>
-
-          <p className="mt-1 text-xs text-slate-500">
-            {description}
-          </p>
-        </div>
-      </div>
-
-      <div className="divide-y divide-slate-100">{children}</div>
-    </section>
-  );
-}
-
-function SettingRow({ title, description, children }) {
-  return (
-    <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h3 className="text-sm font-medium text-slate-800">{title}</h3>
-
-        <p className="mt-1 max-w-xl text-xs leading-5 text-slate-500">
-          {description}
-        </p>
-      </div>
-
-      <div className="shrink-0">{children}</div>
-    </div>
-  );
-}
-
-function ToggleRow({ title, description, enabled = false }) {
-  return (
-    <div className="flex items-center justify-between gap-5 p-5">
-      <div>
-        <h3 className="text-sm font-medium text-slate-800">{title}</h3>
-
-        <p className="mt-1 max-w-xl text-xs leading-5 text-slate-500">
-          {description}
-        </p>
-      </div>
-
-      <button
-        type="button"
-        aria-label={title}
-        className={`relative h-6 w-11 shrink-0 rounded-full transition ${
-          enabled ? "bg-blue-800" : "bg-slate-300"
-        }`}
+    <div style={{ minHeight: 'calc(100vh - 56px)', background: 'var(--paper-100)' }}>
+      {/* ── Header Band (Black) ── */}
+      <header
+        style={{
+          background: 'var(--ink-950)',
+          borderBottom: '1px solid var(--ink-700)',
+          padding: '1.25rem 2rem',
+        }}
       >
-        <span
-          className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition ${
-            enabled ? "left-6" : "left-1"
-          }`}
-        />
-      </button>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+            <span className="meta-label on-black" style={{ fontSize: '0.6875rem' }}>
+              ENVIRONMENT PREFERENCES
+            </span>
+            <DemoTag />
+          </div>
+          <h1
+            style={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontSize: '1.5rem',
+              fontWeight: 400,
+              color: 'var(--paper-0)',
+              margin: 0,
+            }}
+          >
+            Settings
+          </h1>
+        </div>
+      </header>
+
+      {/* ── Settings Sections ── */}
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2.5rem 2rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {/* Section 1: Appearance */}
+          <section
+            style={{
+              background: 'var(--paper-0)',
+              border: '1px solid var(--paper-200)',
+              borderRadius: '2px',
+              padding: '1.75rem',
+              boxShadow: 'var(--shadow-paper-rest)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+              <Sliders size={18} style={{ color: 'var(--gold-500)' }} />
+              <h2 className="meta-label" style={{ fontSize: '0.75rem', margin: 0 }}>
+                APPEARANCE & ACCESSIBILITY
+              </h2>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Reduced Motion Toggle */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--paper-900)' }}>
+                    Reduced Motion
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--paper-500)' }}>
+                    Disable decorative stamp press and span animations.
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={reducedMotion}
+                  onChange={(e) => setReducedMotion(e.target.checked)}
+                  style={{ width: '18px', height: '18px', accentColor: 'var(--gold-500)', cursor: 'pointer' }}
+                />
+              </div>
+
+              {/* High Contrast Toggle */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--paper-100)', paddingTop: '1rem' }}>
+                <div>
+                  <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--paper-900)' }}>
+                    High Contrast Surfaces
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--paper-500)' }}>
+                    Enforce pure #000000 on black and #FFFFFF on paper surfaces.
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={highContrast}
+                  onChange={(e) => setHighContrast(e.target.checked)}
+                  style={{ width: '18px', height: '18px', accentColor: 'var(--gold-500)', cursor: 'pointer' }}
+                />
+              </div>
+
+              {/* Text Size Segmented */}
+              <div style={{ borderTop: '1px solid var(--paper-100)', paddingTop: '1rem' }}>
+                <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--paper-900)', marginBottom: '0.5rem' }}>
+                  Document Reader Text Size
+                </div>
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    background: 'var(--paper-100)',
+                    border: '1px solid var(--paper-300)',
+                    borderRadius: '2px',
+                    padding: '2px',
+                  }}
+                >
+                  {['small', 'medium', 'large'].map((sz) => (
+                    <button
+                      key={sz}
+                      type="button"
+                      onClick={() => setTextSize(sz)}
+                      style={{
+                        background: textSize === sz ? 'var(--paper-0)' : 'transparent',
+                        color: textSize === sz ? 'var(--paper-900)' : 'var(--paper-500)',
+                        border: 'none',
+                        fontSize: '0.75rem',
+                        fontWeight: textSize === sz ? 600 : 400,
+                        padding: '0.35rem 0.85rem',
+                        borderRadius: '2px',
+                        cursor: 'pointer',
+                        textTransform: 'capitalize',
+                        boxShadow: textSize === sz ? 'var(--shadow-paper-rest)' : 'none',
+                      }}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 2: Notifications */}
+          <section
+            style={{
+              background: 'var(--paper-0)',
+              border: '1px solid var(--paper-200)',
+              borderRadius: '2px',
+              padding: '1.75rem',
+              boxShadow: 'var(--shadow-paper-rest)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+              <Bell size={18} style={{ color: 'var(--gold-500)' }} />
+              <h2 className="meta-label" style={{ fontSize: '0.75rem', margin: 0 }}>
+                NOTIFICATIONS
+              </h2>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--paper-900)' }}>
+                  Pipeline Completion Alerts
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--paper-500)' }}>
+                  Show in-app toasts when long-running OCR and inconsistency detection runs conclude.
+                </div>
+              </div>
+              <input
+                type="checkbox"
+                checked={notifyPipeline}
+                onChange={(e) => setNotifyPipeline(e.target.checked)}
+                style={{ width: '18px', height: '18px', accentColor: 'var(--gold-500)', cursor: 'pointer' }}
+              />
+            </div>
+          </section>
+
+          {/* Section 3: Quality & Evaluation */}
+          <section
+            style={{
+              background: 'var(--paper-0)',
+              border: '1px solid var(--paper-200)',
+              borderRadius: '2px',
+              padding: '1.75rem',
+              boxShadow: 'var(--shadow-paper-rest)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+              <BarChart2 size={18} style={{ color: 'var(--gold-500)' }} />
+              <h2 className="meta-label" style={{ fontSize: '0.75rem', margin: 0 }}>
+                BENCHMARKS & QUALITY
+              </h2>
+            </div>
+
+            <p style={{ fontSize: '0.875rem', color: 'var(--paper-700)', lineHeight: 1.6, margin: '0 0 1rem 0' }}>
+              CaseIntel maintains empirical evaluation ledgers measuring retrieval recall, extraction precision, and false-positive inconsistency rates.
+            </p>
+
+            <Link to="/app/reports" className="btn btn-secondary btn-sm">
+              <span>View Evaluation Ledger</span>
+              <ArrowRight size={13} />
+            </Link>
+          </section>
+
+          {/* Section 4: Data Management (Destructive) */}
+          <section
+            style={{
+              background: 'var(--paper-0)',
+              border: '1px solid var(--state-error-text)',
+              borderRadius: '2px',
+              padding: '1.75rem',
+              boxShadow: 'var(--shadow-paper-rest)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--state-error-text)' }}>
+              <ShieldAlert size={18} />
+              <h2 className="meta-label" style={{ fontSize: '0.75rem', margin: 0, color: 'var(--state-error-text)' }}>
+                DESTRUCTIVE DATA MANAGEMENT
+              </h2>
+            </div>
+
+            <p style={{ fontSize: '0.875rem', color: 'var(--paper-700)', lineHeight: 1.5, margin: '0 0 1.25rem 0' }}>
+              Purge all cached OCR indexes, extracted entities, and finding records associated with active matter <strong>{matter.id}</strong>. Ingested original documents will require re-analysis.
+            </p>
+
+            {dataDeleted && (
+              <div
+                style={{
+                  background: 'var(--state-ok-bg)',
+                  border: '1px solid var(--state-ok-text)',
+                  color: 'var(--state-ok-text)',
+                  padding: '0.5rem 0.75rem',
+                  fontSize: '0.75rem',
+                  marginBottom: '1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                }}
+              >
+                <Check size={14} /> Matter analysis cache purged successfully.
+              </div>
+            )}
+
+            {deleteConfirmOpen ? (
+              <div style={{ background: 'var(--state-error-bg)', padding: '1rem', border: '1px solid var(--state-error-text)', borderRadius: '2px' }}>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--state-error-text)', fontWeight: 500, marginBottom: '0.75rem' }}>
+                  Confirm purge of all analysis data for {matter.id}? This action cannot be reversed.
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button onClick={handleDeleteData} className="btn btn-sm btn-destructive">
+                    Yes, Purge Matter Cache
+                  </button>
+                  <button onClick={() => setDeleteConfirmOpen(false)} className="btn btn-sm btn-secondary">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button onClick={() => setDeleteConfirmOpen(true)} className="btn btn-sm btn-destructive">
+                <Trash2 size={13} />
+                Purge Matter Data…
+              </button>
+            )}
+          </section>
+
+          {/* Footer note */}
+          <aside
+            role="note"
+            style={{
+              fontSize: '0.75rem',
+              color: 'var(--paper-500)',
+              borderLeft: '2px solid var(--gold-500)',
+              paddingLeft: '0.75rem',
+              fontStyle: 'italic',
+            }}
+          >
+            CaseIntel is a research and review aid, NOT legal advice.
+          </aside>
+        </div>
+      </div>
     </div>
   );
 }
-
-export default Settings;

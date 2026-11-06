@@ -1,233 +1,186 @@
-import {
-  Search,
-  SlidersHorizontal,
-  BookOpen,
-  FileText,
-  ExternalLink,
-  ShieldCheck,
-  Clock,
-} from "lucide-react";
+/**
+ * LegalResearch — §13.6 / Placeholder (/app/research)
+ * Info panel: "Legal Research across a large curated legal corpus is planned, not part of the current release."
+ * Disabled search controls with "Coming later" label.
+ * No statutes or external citations displayed.
+ */
+import { BookOpen, Search, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useMatter } from '../context/MatterContext';
+import { MOCK_MATTER } from '../mocks/data';
+import DemoTag from '../components/ui/DemoTag';
 
-function LegalResearch() {
+export default function LegalResearch() {
+  const { activeMatter = MOCK_MATTER } = useMatter() || {};
+  const matter = activeMatter || MOCK_MATTER;
+
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-slate-50">
-
-      {/* Header */}
-      <div className="border-b border-slate-200 bg-white px-8 py-5">
-
-        <div className="flex items-center justify-between">
-
+    <div style={{ minHeight: 'calc(100vh - 56px)', background: 'var(--paper-100)' }}>
+      {/* ── Header Band (Black) ── */}
+      <header
+        style={{
+          background: 'var(--ink-950)',
+          borderBottom: '1px solid var(--ink-700)',
+          padding: '1.25rem 2rem',
+        }}
+      >
+        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'between', gap: '1rem', flexWrap: 'wrap' }}>
           <div>
-            <div className="flex items-center gap-2">
-              <BookOpen size={20} className="text-blue-900" />
-
-              <h1 className="text-lg font-semibold text-slate-900">
-                Legal Research
-              </h1>
-            </div>
-
-            <p className="mt-1 text-xs text-slate-500">
-              Search legal information and explore source-backed results.
-            </p>
-          </div>
-
-          <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
-            <Clock size={16} />
-            Research History
-          </button>
-
-        </div>
-
-      </div>
-
-      {/* Main */}
-      <main className="mx-auto max-w-6xl px-8 py-8">
-
-        {/* Search */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-
-          <label className="mb-2 block text-sm font-semibold text-slate-800">
-            What would you like to research?
-          </label>
-
-          <div className="flex gap-3">
-
-            <div className="flex flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
-
-              <Search size={19} className="text-slate-400" />
-
-              <input
-                type="text"
-                placeholder="Enter a legal topic, case, statute, or question..."
-                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
-              />
-
-            </div>
-
-            <button className="flex items-center gap-2 rounded-lg bg-blue-900 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800">
-              <Search size={17} />
-              Search
-            </button>
-
-          </div>
-
-          <div className="mt-4 flex items-center justify-between">
-
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-
-              <SlidersHorizontal size={14} />
-
-              <button className="hover:text-blue-900">
-                Filters
-              </button>
-
-              <span>•</span>
-
-              <span>All sources</span>
-
-            </div>
-
-            <span className="text-[11px] text-slate-400">
-              AI-assisted research
-            </span>
-
-          </div>
-
-        </div>
-
-        {/* Research workspace */}
-        <div className="mt-6 grid grid-cols-3 gap-6">
-
-          {/* Results */}
-          <section className="col-span-2">
-
-            <div className="mb-4 flex items-center justify-between">
-
-              <div>
-                <h2 className="text-sm font-semibold text-slate-900">
-                  Research Results
-                </h2>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  Source-backed legal information will appear here.
-                </p>
-              </div>
-
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
-                0 results
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+              <span className="case-id" style={{ color: 'var(--gold-400)', fontSize: '0.8125rem' }}>
+                {matter.id}
               </span>
-
+              <span style={{ color: 'var(--ink-600)' }}>·</span>
+              <span className="meta-label on-black" style={{ fontSize: '0.6875rem' }}>
+                CORPUS REPOSITORY
+              </span>
+              <DemoTag />
             </div>
+            <h1
+              style={{
+                fontFamily: "'Fraunces', Georgia, serif",
+                fontSize: '1.5rem',
+                fontWeight: 400,
+                color: 'var(--paper-0)',
+                margin: 0,
+              }}
+            >
+              Legal Research
+            </h1>
+          </div>
+        </div>
+      </header>
 
-            {/* Empty state */}
-            <div className="rounded-xl border border-dashed border-slate-300 bg-white px-8 py-16 text-center">
-
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-900">
-                <Search size={22} />
-              </div>
-
-              <h3 className="mt-4 text-sm font-semibold text-slate-800">
-                Start your legal research
-              </h3>
-
-              <p className="mx-auto mt-2 max-w-md text-xs leading-5 text-slate-500">
-                Enter a legal question, case name, statute, or topic above.
-                The research system will retrieve relevant information and sources.
-              </p>
-
+      {/* ── Main Content ── */}
+      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '3rem 2rem' }}>
+        {/* Informational Panel */}
+        <div
+          style={{
+            background: 'var(--paper-0)',
+            border: '1px solid var(--paper-200)',
+            borderRadius: '2px',
+            padding: '2.5rem',
+            boxShadow: 'var(--shadow-paper-lift)',
+            marginBottom: '2rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '2px',
+                background: 'var(--gold-100)',
+                color: 'var(--gold-600)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <BookOpen size={20} />
             </div>
-
-          </section>
-
-          {/* Research tools */}
-          <aside>
-
-            <h2 className="mb-4 text-sm font-semibold text-slate-900">
-              Research Tools
-            </h2>
-
-            <div className="space-y-3">
-
-              <ToolCard
-                icon={<BookOpen size={18} />}
-                title="Case Law"
-                description="Search relevant case decisions and legal authorities."
-              />
-
-              <ToolCard
-                icon={<FileText size={18} />}
-                title="Legal Documents"
-                description="Explore statutes, regulations, and legal documents."
-              />
-
-              <ToolCard
-                icon={<ShieldCheck size={18} />}
-                title="Source Verification"
-                description="Review the reliability and verification status of sources."
-              />
-
-            </div>
-
-            {/* Disclaimer */}
-            <div className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
-
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={16} className="text-blue-900" />
-
-                <span className="text-xs font-semibold text-slate-800">
-                  Research Notice
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                <span className="meta-label" style={{ fontSize: '0.6875rem' }}>PLANNED FEATURE</span>
+                <span
+                  style={{
+                    fontFamily: "'IBM Plex Mono'",
+                    fontSize: '0.6875rem',
+                    background: 'var(--paper-100)',
+                    color: 'var(--paper-700)',
+                    padding: '0.1rem 0.4rem',
+                    borderRadius: '2px',
+                  }}
+                >
+                  ROADMAP v2.0
                 </span>
               </div>
-
-              <p className="mt-2 text-[11px] leading-5 text-slate-500">
-                Research results are AI-assisted and should be independently
-                verified before being relied upon for legal decisions.
-              </p>
-
+              <h2
+                style={{
+                  fontFamily: "'Fraunces', Georgia, serif",
+                  fontSize: '1.25rem',
+                  fontWeight: 500,
+                  color: 'var(--paper-900)',
+                  margin: 0,
+                }}
+              >
+                External Statutory & Case Law Corpus
+              </h2>
             </div>
+          </div>
 
-          </aside>
+          <p
+            style={{
+              fontFamily: "'Source Serif 4', Georgia, serif",
+              fontSize: '1rem',
+              lineHeight: 1.7,
+              color: 'var(--paper-800)',
+              margin: '0 0 1.5rem 0',
+            }}
+          >
+            Legal Research across a large curated legal corpus is planned, not part of the current release. CaseIntel currently operates strictly on uploaded matter exhibits and evidence files to guarantee evidentiary precision and prevent external hallucination.
+          </p>
 
+          {/* Disabled Search Bar */}
+          <div
+            style={{
+              background: 'var(--paper-50)',
+              border: '1px solid var(--paper-200)',
+              borderRadius: '2px',
+              padding: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              opacity: 0.6,
+              cursor: 'not-allowed',
+            }}
+          >
+            <Search size={16} style={{ color: 'var(--paper-400)' }} />
+            <span
+              style={{
+                fontFamily: "'Source Serif 4', Georgia, serif",
+                fontSize: '0.9375rem',
+                color: 'var(--paper-400)',
+                flex: 1,
+              }}
+            >
+              Search Indian Kanoon, Supreme Court Judgments, Central Acts…
+            </span>
+            <span
+              style={{
+                fontFamily: "'IBM Plex Mono'",
+                fontSize: '0.6875rem',
+                color: 'var(--paper-500)',
+                background: 'var(--paper-200)',
+                padding: '0.2rem 0.5rem',
+                borderRadius: '2px',
+                textTransform: 'uppercase',
+              }}
+            >
+              Coming Later
+            </span>
+          </div>
         </div>
 
-      </main>
+        {/* Back Link */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Link to="/app/investigation" className="btn btn-secondary btn-sm">
+            <ArrowLeft size={13} /> Return to AI Investigation
+          </Link>
 
+          <aside
+            role="note"
+            style={{
+              fontSize: '0.75rem',
+              color: 'var(--paper-500)',
+              fontStyle: 'italic',
+            }}
+          >
+            CaseIntel is a research and review aid, NOT legal advice.
+          </aside>
+        </div>
+      </div>
     </div>
   );
 }
-
-function ToolCard({ icon, title, description }) {
-  return (
-    <button className="w-full rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50/30">
-
-      <div className="flex items-start gap-3">
-
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-900">
-          {icon}
-        </div>
-
-        <div className="min-w-0 flex-1">
-
-          <div className="flex items-center justify-between">
-
-            <h3 className="text-sm font-semibold text-slate-800">
-              {title}
-            </h3>
-
-            <ExternalLink size={14} className="text-slate-400" />
-
-          </div>
-
-          <p className="mt-1 text-xs leading-5 text-slate-500">
-            {description}
-          </p>
-
-        </div>
-
-      </div>
-
-    </button>
-  );
-}
-
-export default LegalResearch;

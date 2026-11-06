@@ -1,216 +1,236 @@
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  GraduationCap,
-  ShieldCheck,
-  Pencil,
-  Save,
-} from "lucide-react";
+/**
+ * Profile — §20 / Legal Professional Profile (/app/profile)
+ * Fields: Name, Email, Password change (current + new), Role/title (free text).
+ * No avatar upload. No org fields.
+ * Save button. Success state.
+ */
+import { useState } from 'react';
+import { Check } from 'lucide-react';
+import DemoTag from '../components/ui/DemoTag';
 
-function Profile() {
+export default function Profile() {
+  const [name, setName] = useState('Senior Counsel');
+  const [email, setEmail] = useState('counsel@caseintel.legal');
+  const [title, setTitle] = useState('Lead Dispute Resolution Counsel');
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSuccess(true);
+    setCurrentPw('');
+    setNewPw('');
+    setTimeout(() => setSuccess(false), 3000);
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-8 lg:px-10">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-slate-900">
-          Profile
-        </h1>
-
-        <p className="mt-1 text-sm text-slate-500">
-          Manage your personal information and Legal AI Workspace profile.
-        </p>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-[320px_1fr]">
-        {/* Profile Card */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-col items-center text-center">
-            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-blue-900 text-2xl font-semibold text-white">
-              SS
-            </div>
-
-            <h2 className="mt-4 text-lg font-semibold text-slate-900">
-              Sidra Shaikh
-            </h2>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Legal AI Workspace User
-            </p>
-
-            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-800">
-              <ShieldCheck size={14} />
-              Active Account
+    <div style={{ minHeight: 'calc(100vh - 56px)', background: 'var(--paper-100)' }}>
+      {/* ── Header Band (Black) ── */}
+      <header
+        style={{
+          background: 'var(--ink-950)',
+          borderBottom: '1px solid var(--ink-700)',
+          padding: '1.25rem 2rem',
+        }}
+      >
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+            <span className="meta-label on-black" style={{ fontSize: '0.6875rem' }}>
+              COUNSEL ACCOUNT
             </span>
+            <DemoTag />
           </div>
-
-          <div className="mt-6 border-t border-slate-100 pt-5">
-            <div className="flex items-center gap-3 text-sm text-slate-600">
-              <Mail size={17} className="text-slate-400" />
-              <span>Account email</span>
-            </div>
-
-            <div className="mt-4 flex items-center gap-3 text-sm text-slate-600">
-              <GraduationCap size={17} className="text-slate-400" />
-              <span>Student Account</span>
-            </div>
-          </div>
+          <h1
+            style={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontSize: '1.5rem',
+              fontWeight: 400,
+              color: 'var(--paper-0)',
+              margin: 0,
+            }}
+          >
+            User Profile
+          </h1>
         </div>
+      </header>
 
-        {/* Personal Information */}
-        <div className="space-y-6">
-          <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex flex-col gap-3 border-b border-slate-100 pb-5 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-base font-semibold text-slate-900">
-                  Personal Information
-                </h2>
+      {/* ── Main Form ── */}
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2.5rem 2rem' }}>
+        <div
+          style={{
+            background: 'var(--paper-0)',
+            border: '1px solid var(--paper-200)',
+            borderRadius: '2px',
+            padding: '2rem 2.5rem',
+            boxShadow: 'var(--shadow-paper-rest)',
+          }}
+        >
+          {success && (
+            <div
+              style={{
+                background: 'var(--state-ok-bg)',
+                border: '1px solid var(--state-ok-text)',
+                color: 'var(--state-ok-text)',
+                padding: '0.75rem 1rem',
+                borderRadius: '2px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                fontSize: '0.8125rem',
+                marginBottom: '1.5rem',
+              }}
+            >
+              <Check size={16} />
+              <span>Profile credentials and details successfully updated.</span>
+            </div>
+          )}
 
-                <p className="mt-1 text-xs text-slate-500">
-                  Update the information associated with your workspace.
-                </p>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Full Name */}
+            <div>
+              <label
+                style={{
+                  display: 'block',
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  color: 'var(--paper-700)',
+                  marginBottom: '0.35rem',
+                }}
+              >
+                Full Legal Name
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="input-base"
+                style={{ width: '100%', fontSize: '0.875rem' }}
+              />
+            </div>
+
+            {/* Email Address */}
+            <div>
+              <label
+                style={{
+                  display: 'block',
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  color: 'var(--paper-700)',
+                  marginBottom: '0.35rem',
+                }}
+              >
+                Official Email Address
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="input-base"
+                style={{ width: '100%', fontSize: '0.875rem' }}
+              />
+            </div>
+
+            {/* Role / Title */}
+            <div>
+              <label
+                style={{
+                  display: 'block',
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  color: 'var(--paper-700)',
+                  marginBottom: '0.35rem',
+                }}
+              >
+                Professional Role / Title
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Partner, Senior Advocate, Dispute Counsel"
+                className="input-base"
+                style={{ width: '100%', fontSize: '0.875rem' }}
+              />
+            </div>
+
+            {/* Divider */}
+            <div style={{ borderTop: '1px solid var(--paper-200)', margin: '0.5rem 0' }} />
+
+            <div>
+              <span className="meta-label" style={{ fontSize: '0.6875rem', display: 'block', marginBottom: '1rem' }}>
+                SECURITY & PASSWORD
+              </span>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                      color: 'var(--paper-700)',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    Current Password
+                  </label>
+                  <input
+                    type="password"
+                    value={currentPw}
+                    onChange={(e) => setCurrentPw(e.target.value)}
+                    placeholder="••••••••"
+                    className="input-base"
+                    style={{ width: '100%', fontSize: '0.875rem' }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                      color: 'var(--paper-700)',
+                      marginBottom: '0.35rem',
+                    }}
+                  >
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={newPw}
+                    onChange={(e) => setNewPw(e.target.value)}
+                    placeholder="Minimum 8 characters"
+                    className="input-base"
+                    style={{ width: '100%', fontSize: '0.875rem' }}
+                  />
+                </div>
               </div>
+            </div>
 
-              <button className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
-                <Pencil size={15} />
-                Edit Profile
+            {/* Submit */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem' }}>
+              <button type="submit" className="btn btn-primary btn-md">
+                Save Profile Changes
               </button>
+
+              <aside
+                role="note"
+                style={{
+                  fontSize: '0.75rem',
+                  color: 'var(--paper-500)',
+                  fontStyle: 'italic',
+                }}
+              >
+                Credentials stored with strict encryption.
+              </aside>
             </div>
-
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
-              <ProfileField
-                icon={<User size={17} />}
-                label="Full Name"
-                value="Sidra Shaikh"
-              />
-
-              <ProfileField
-                icon={<Mail size={17} />}
-                label="Email Address"
-                value="your-email@example.com"
-              />
-
-              <ProfileField
-                icon={<Phone size={17} />}
-                label="Phone Number"
-                value="+91 XXXXX XXXXX"
-              />
-
-              <ProfileField
-                icon={<MapPin size={17} />}
-                label="Location"
-                value="India"
-              />
-
-              <ProfileField
-                icon={<GraduationCap size={17} />}
-                label="Education"
-                value="B.Tech Computer Science & Engineering"
-              />
-
-              <ProfileField
-                icon={<ShieldCheck size={17} />}
-                label="Account Role"
-                value="Workspace User"
-              />
-            </div>
-          </section>
-
-          {/* Academic / Workspace Information */}
-          <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">
-              Workspace Information
-            </h2>
-
-            <p className="mt-1 text-xs text-slate-500">
-              Information about your Legal AI Workspace account.
-            </p>
-
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <InfoBox
-                label="Workspace"
-                value="Legal AI Workspace"
-              />
-
-              <InfoBox
-                label="Account Type"
-                value="Student / Research"
-              />
-
-              <InfoBox
-                label="AI Assistant"
-                value="Available"
-              />
-
-              <InfoBox
-                label="Document Analysis"
-                value="Available"
-              />
-            </div>
-          </section>
-
-          {/* Security */}
-          <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-800">
-                <ShieldCheck size={19} />
-              </div>
-
-              <div>
-                <h2 className="text-base font-semibold text-slate-900">
-                  Account Security
-                </h2>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  Manage your account security settings from Settings.
-                </p>
-              </div>
-            </div>
-
-            <button className="mt-5 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
-              <Save size={16} />
-              Security Settings
-            </button>
-          </section>
+          </form>
         </div>
       </div>
-
-      {/* Disclaimer */}
-      <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 px-5 py-4">
-        <p className="text-xs leading-5 text-blue-900">
-          <span className="font-semibold">Legal AI Notice:</span>{" "}
-          Profile information is used to personalize your Legal AI Workspace.
-          Do not enter unnecessary sensitive information into the system.
-        </p>
-      </div>
     </div>
   );
 }
-
-function ProfileField({ icon, label, value }) {
-  return (
-    <div>
-      <label className="mb-2 flex items-center gap-2 text-xs font-medium text-slate-500">
-        <span className="text-slate-400">{icon}</span>
-        {label}
-      </label>
-
-      <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function InfoBox({ label, value }) {
-  return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-      <p className="text-xs text-slate-500">{label}</p>
-
-      <p className="mt-1 text-sm font-medium text-slate-800">{value}</p>
-    </div>
-  );
-}
-
-export default Profile;

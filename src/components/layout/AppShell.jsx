@@ -1,19 +1,33 @@
-import Sidebar from "./Sidebar";
+
+/**
+ * AppShell — No left sidebar
+ * Full-width application layout
+ */
+
 import Topbar from "./Topbar";
 
-function AppShell({ children }) {
+export default function AppShell({ children }) {
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Sidebar />
-      <Topbar />
+    <div
+      style={{
+        minHeight: "100vh",
+        width: "100%",
+        background: "var(--paper-50)",
+      }}
+    >
+      <Topbar sidebarWidth={0} />
 
-      <main className="ml-64 min-h-screen pt-16">
-        <div className="w-full">
-          {children}
-        </div>
+      <main
+        id="main-content"
+        style={{
+          width: "100%",
+          marginLeft: 0,
+          paddingTop: "56px",
+          minHeight: "100vh",
+        }}
+      >
+        {children}
       </main>
     </div>
   );
 }
-
-export default AppShell;

@@ -1,218 +1,241 @@
+/**
+ * Sidebar — §11
+ * 13 items, flat list (no groups/dividers), ink-950 background
+ * Active: paper-0 text + 2px gold-400 left bar + ink-900 bg
+ */
+import { NavLink, useNavigate } from 'react-router-dom';
+import GoldSeal from '../ui/GoldSeal';
 import {
   LayoutDashboard,
-  Bot,
-  Search,
-  FileText,
+  FolderOpen,
+  FlaskConical,
+  BookOpen,
+  Files,
   Upload,
-  ScanSearch,
-  FileCheck,
-  Scale,
-  Gavel,
-  History,
-  BarChart3,
+  GitBranch,
+  Clock,
+  AlertTriangle,
+  MessageSquare,
+  FileText,
   User,
   Settings,
   LogOut,
-  ChevronDown,
-  BriefcaseBusiness,
-  Files,
-} from "lucide-react";
+} from 'lucide-react';
 
-import { NavLink, useNavigate } from "react-router-dom";
+const NAV_ITEMS = [
+  { label: 'Dashboard',         icon: LayoutDashboard, path: '/app/dashboard'    },
+  { label: 'Matters',           icon: FolderOpen,      path: '/app/matters'      },
+  { label: 'AI Investigation',  icon: FlaskConical,    path: '/app/investigation' },
+  { label: 'Legal Research',    icon: BookOpen,        path: '/app/research'     },
+  { label: 'Documents',         icon: Files,           path: '/app/documents'    },
+  { label: 'Upload Evidence',   icon: Upload,          path: '/app/upload'       },
+  { label: 'Document Analysis', icon: GitBranch,       path: '/app/analysis'     },
+  { label: 'Timeline',          icon: Clock,           path: '/app/timeline'     },
+  { label: 'Findings',          icon: AlertTriangle,   path: '/app/findings'     },
+  { label: 'Conversations',     icon: MessageSquare,   path: '/app/conversations' },
+  { label: 'Reports',           icon: FileText,        path: '/app/reports'      },
+  { label: 'Profile',           icon: User,            path: '/app/profile'      },
+  { label: 'Settings',          icon: Settings,        path: '/app/settings'     },
+];
 
+export default function Sidebar({ collapsed = false }) {
+  const navigate = useNavigate();
 
-function Sidebar() {
-    const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem('legalAI_loggedIn');
+    navigate('/login');
+  };
+
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-slate-200 bg-white">
+    <aside
+      aria-label="Main navigation"
+      style={{
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        height: '100vh',
+        width: collapsed ? '64px' : '240px',
+        background: 'var(--ink-950)',
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: 40,
+        borderRight: '1px solid var(--ink-700)',
+        transition: 'width var(--motion-base)',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Wordmark + GoldSeal */}
+      <div
+        style={{
+          padding: collapsed ? '1.25rem 0' : '1.25rem 1.25rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.625rem',
+          borderBottom: '1px solid var(--ink-700)',
+          justifyContent: collapsed ? 'center' : 'flex-start',
+          minHeight: '64px',
+          flexShrink: 0,
+        }}
+      >
+        <GoldSeal size={20} style={{ flexShrink: 0 }} />
+        {!collapsed && (
+          <span
+            style={{
+              fontFamily: "'Fraunces', Georgia, serif",
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              letterSpacing: '0.12em',
+              color: 'var(--paper-50)',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            CaseIntel
+          </span>
+        )}
+      </div>
 
-      {/* Logo */}
-      <div className="flex h-16 items-center border-b border-slate-200 px-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-900 text-white">
-            <Scale size={20} />
+      {/* Active Matter chip */}
+      {!collapsed && (
+        <div
+          style={{
+            padding: '0.75rem 1.25rem',
+            borderBottom: '1px solid var(--ink-700)',
+            flexShrink: 0,
+          }}
+        >
+          <div style={{ fontSize: '0.625rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-500)', marginBottom: '0.25rem' }}>
+            Active Matter
           </div>
-
-          <div>
-            <h1 className="text-sm font-bold text-slate-900">
-              Legal AI
-            </h1>
-            <p className="text-xs text-slate-500">
-              Workspace
-            </p>
+          <div style={{ fontFamily: "'IBM Plex Mono'", fontSize: '0.75rem', color: 'var(--gold-400)', letterSpacing: '0.06em' }}>
+            CI-2026-0042
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--ink-400)', marginTop: '0.125rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            Sharma v. Regional Bank
           </div>
         </div>
-      </div>
+      )}
 
       {/* Navigation */}
-     <nav className="h-[calc(100vh-160px)] space-y-1 overflow-y-auto px-3 py-5">
-
-        <NavItem
-  icon={<LayoutDashboard size={18} />}
-  label="Dashboard"
-  to="/"
-/>
-
-        <NavItem
-  icon={<Bot size={18} />}
-  label="AI Assistant"
-  to="/ai-assistant"
-/>
-
-        <NavItem
-  icon={<Search size={18} />}
-  label="Legal Research"
-  to="/legal-research"
-/>
-
-        {/* Documents */}
-        <div className="pt-2">
-          <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Documents
-          </p>
-
-          <NavItem
-  icon={<FileText size={18} />}
-  label="Document Library"
-  to="/documents"
-/>
-
-          <NavItem
-  icon={<Upload size={18} />}
-  label="Upload Document"
-  to="/documents/upload"
-/>
-
-          <NavItem
-  icon={<ScanSearch size={18} />}
-  label="Document Analysis"
-  to="/documents/analysis"
-/>
-        </div>
-
-        {/* Phase 2 */}
-        <div className="pt-4">
-          <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Phase 2
-          </p>
-
-          <NavItem
-  icon={<FileText size={18} />}
-  label="Contract Review"
-  to="/contract-review"
-/>
-
-         <NavItem
-  icon={<BriefcaseBusiness size={18} />}
-  label="Case Analysis"
-  to="/case-analysis"
-/>
-
-          <NavItem
-  icon={<Gavel size={18} />}
-  label="Judgment Analysis"
-  to="/judgment-analysis"
-/>
-
-<NavItem
-  icon={<Files size={18} />}
-  label="Multi-Document Analysis"
-  to="/multi-document-analysis"
-/>
-        </div>
-
-        <div className="pt-2">
-          <NavItem
-  icon={<History size={18} />}
-  label="Conversation History"
-  to="/conversation-history"
-/>
-
-          <NavItem
-  icon={<BarChart3 size={18} />}
-  label="Reports"
-  to="/reports"
-/>
-
-          <NavItem
-  icon={<User size={18} />}
-  label="Profile"
-  to="/profile"
-/>
-
-          <NavItem
-  icon={<Settings size={18} />}
-  label="Settings"
-  to="/settings"
-/>
-        </div>
-
+      <nav
+        aria-label="Primary"
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '0.5rem 0',
+        }}
+      >
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              title={collapsed ? item.label : undefined}
+              style={({ isActive }) => ({
+                display: 'flex',
+                alignItems: 'center',
+                gap: collapsed ? 0 : '0.625rem',
+                padding: collapsed ? '0.75rem 0' : '0.625rem 1.25rem',
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                height: '44px',
+                color: isActive ? 'var(--paper-0)' : 'var(--ink-300)',
+                background: isActive ? 'var(--ink-900)' : 'transparent',
+                borderLeft: isActive ? '2px solid var(--gold-400)' : '2px solid transparent',
+                fontSize: '0.875rem',
+                textDecoration: 'none',
+                transition: 'all var(--motion-quick)',
+                flexShrink: 0,
+              })}
+              onMouseOver={e => {
+                if (!e.currentTarget.getAttribute('aria-current')) {
+                  e.currentTarget.style.background = 'var(--ink-900)';
+                  e.currentTarget.style.color = 'var(--paper-50)';
+                }
+              }}
+              onMouseOut={e => {
+                if (!e.currentTarget.getAttribute('aria-current')) {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'var(--ink-300)';
+                }
+              }}
+            >
+              <Icon size={20} strokeWidth={1.5} style={{ flexShrink: 0 }} aria-hidden="true" />
+              {!collapsed && <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.label}</span>}
+            </NavLink>
+          );
+        })}
       </nav>
 
-      {/* User section */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-slate-200 bg-white p-3">
-
-        <div className="flex items-center gap-3 rounded-lg p-2 hover:bg-slate-50">
-
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-900">
-            SS
+      {/* Bottom: user + disclaimer */}
+      <div
+        style={{
+          borderTop: '1px solid var(--ink-700)',
+          padding: '0.75rem',
+          flexShrink: 0,
+        }}
+      >
+        {!collapsed && (
+          <div
+            style={{
+              fontSize: '0.625rem',
+              color: 'var(--ink-500)',
+              textAlign: 'center',
+              marginBottom: '0.5rem',
+              lineHeight: 1.4,
+            }}
+          >
+            Research aid, not legal advice
           </div>
-
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-slate-800">
-              User
-            </p>
-            <p className="truncate text-xs text-slate-500">
-              Legal Workspace
-            </p>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: collapsed ? 'center' : 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '2px',
+                background: 'var(--ink-800)',
+                border: '1px solid var(--ink-700)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.6875rem',
+                fontWeight: 600,
+                color: 'var(--ink-300)',
+                flexShrink: 0,
+              }}
+            >
+              SS
+            </div>
+            {!collapsed && (
+              <span style={{ fontSize: '0.8125rem', color: 'var(--ink-300)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                Legal User
+              </span>
+            )}
           </div>
-
-          <ChevronDown size={16} className="text-slate-400" />
-
+          <button
+            onClick={handleLogout}
+            title="Sign out"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--ink-500)',
+              cursor: 'pointer',
+              padding: '0.25rem',
+              borderRadius: '2px',
+              display: 'flex',
+              alignItems: 'center',
+              transition: 'color var(--motion-quick)',
+            }}
+            onMouseOver={e => { e.currentTarget.style.color = 'var(--state-error-text)'; }}
+            onMouseOut={e => { e.currentTarget.style.color = 'var(--ink-500)'; }}
+            aria-label="Sign out"
+          >
+            <LogOut size={16} strokeWidth={1.5} />
+          </button>
         </div>
-
-       <button
-  onClick={() => {
-    localStorage.removeItem("legalAI_loggedIn");
-    navigate("/login");
-  }}
-  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-600 transition hover:bg-red-50 hover:text-red-700"
->
-  <LogOut size={18} />
-  <span>Logout</span>
-</button>
-
       </div>
-
     </aside>
   );
 }
-
-function NavItem({ icon, label, to, badge }) {
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
-          isActive
-            ? "bg-blue-50 font-semibold text-blue-900"
-            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-        }`
-      }
-    >
-      {icon}
-
-      <span className="flex-1 text-left">
-        {label}
-      </span>
-
-      {badge && (
-        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">
-          {badge}
-        </span>
-      )}
-    </NavLink>
-  );
-}
-
-export default Sidebar;
