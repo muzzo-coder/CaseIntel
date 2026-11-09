@@ -42,6 +42,19 @@ CaseIntel is a modular, AI-powered legal document intelligence platform. This di
 - **Permanent Safe Deletion (`DELETE /api/v1/cases/{case_id}`)**: Hard deletion of case workspaces with user verification.
 - **Database Migrations**: Alembic migration `26830d465f4f_create_cases_table.py`.
 
+### Module 4: Legal Document Management
+- **Strict User Ownership & Isolation**: Documents are bound to `user_id`. Every operation (`upload`, `list`, `stats`, `detail`, `download`, `delete`) enforces strict user verification; unauthorized access attempts return 404 without leaking data existence.
+- **Multi-Format Verification & Magic Bytes**: Validates file extensions (`.pdf`, `.docx`, `.doc`, `.txt`, `.md`, `.rtf`) and verifies magic binary headers (`%PDF-` for PDFs, `PK\x03\x04` ZIP archive headers for DOCX, null byte inspection for plain text) to block disguised executables.
+- **Integrity & Checksums**: Calculates cryptographic SHA-256 checksums (`file_hash`) for tamper detection and document deduplication.
+- **Security & Storage Protection**: Enforces 25 MB file size caps, rejects empty (0-byte) files, and sanitizes filenames against path traversal attacks (`../../`). Stored safely in user-isolated disk directories (`uploads/users/{user_id}/`).
+- **Text Extraction & Page Counting**: Extracts structured text and calculates page counts from PDFs and Word documents, recording `status` (`processed` or `failed`) and any error details.
+- **Paginated Library & Filters (`GET /api/v1/documents`)**: Supports pagination (`page`, `page_size`), case association filtering (`case_id`), status filtering (`status`), file type filtering (`file_type`), and case-insensitive filename search (`search`).
+- **Live Document Metrics (`GET /api/v1/documents/stats`)**: Aggregates user-level document counts (total, processed, processing, failed) and cumulative storage bytes consumed.
+- **Authenticated Streaming Download (`GET /api/v1/documents/{document_id}/download`)**: Streams files with proper MIME types and `Content-Disposition: attachment; filename="..."` headers.
+- **Permanent Safe Deletion (`DELETE /api/v1/documents/{document_id}`)**: Unlinks file from filesystem and deletes database records.
+- **Frontend Integration**: Full live UI connection for [src/pages/DocumentLibrary.jsx](file:///Users/apple/Documents/Projects/Caseintel/src/pages/DocumentLibrary.jsx), [src/pages/UploadDocument.jsx](file:///Users/apple/Documents/Projects/Caseintel/src/pages/UploadDocument.jsx), and [src/pages/Dashboard.jsx](file:///Users/apple/Documents/Projects/Caseintel/src/pages/Dashboard.jsx) with real-time stats cards, document inspection modal with extracted text viewer, drag-and-drop upload zone, and case association selector.
+- **Database Migrations**: Alembic migration `83d3a156c6c1_add_file_hash_and_original_filename_to_.py`.
+
 ### AI-Powered Case Analysis Features & Document Pipeline
 - **Document Management (`Document` model)**: Supports uploading and parsing `.pdf` (via `pypdf`), `.docx` (via `python-docx`), `.txt`, `.md`, and `.rtf` with automated page counting and text extraction.
 - **1. Case Summary (`POST /api/v1/cases/{case_id}/analysis/summary`)**: Generates structured factual summaries containing key established facts, parties with roles/representation, legal causes of action with remedies sought, procedural posture, and traceable source citations.
@@ -162,6 +175,19 @@ backend/
 | `PATCH`| `/api/v1/cases/{case_id}/archive` | Soft-archive or restore a case | Yes (Bearer) | `200`, `401`, `404` |
 | `DELETE`| `/api/v1/cases/{case_id}` | Permanently delete a case workspace | Yes (Bearer) | `200`, `401`, `404` |
 
+### Legal Document Management Endpoints (Module 4)
+| Method | Endpoint | Description | Auth Required | Status Codes |
+|---|---|---|---|---|
+| `POST` | `/api/v1/documents/upload` | Upload document (PDF, DOCX, TXT) with magic byte & hash validation | Yes (Bearer) | `201`, `400`, `401` |
+| `GET` | `/api/v1/documents` | List user documents with pagination, search, and status/type filters | Yes (Bearer) | `200`, `401` |
+| `GET` | `/api/v1/documents/stats` | Aggregated document counts & total storage bytes consumed | Yes (Bearer) | `200`, `401` |
+| `GET` | `/api/v1/documents/{document_id}` | Retrieve document metadata and extracted text preview | Yes (Bearer) | `200`, `401`, `404` |
+| `GET` | `/api/v1/documents/{document_id}/download` | Stream authenticated document download with filename header | Yes (Bearer) | `200`, `401`, `404` |
+| `DELETE`| `/api/v1/documents/{document_id}` | Permanently delete document from disk and database | Yes (Bearer) | `200`, `401`, `404` |
+| `POST` | `/api/v1/cases/{case_id}/documents` | Upload document directly to a case matter workspace | Yes (Bearer) | `201`, `400`, `401`, `404` |
+| `GET` | `/api/v1/cases/{case_id}/documents` | List all documents belonging to a case matter | Yes (Bearer) | `200`, `401`, `404` |
+| `DELETE`| `/api/v1/cases/{case_id}/documents/{document_id}` | Remove document from case matter workspace | Yes (Bearer) | `200`, `401`, `404` |
+
 ---
 
 ## 4. Example Requests & Responses
@@ -261,7 +287,8 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```bash
 pytest -v
 ```
-All 57 tests across AI case analysis, document extraction, case management, authentication, configuration, CORS, error handling, and health probes will execute automatically.
+All 69 tests across legal document management, AI case analysis, text extraction pipeline, case management, authentication, configuration, CORS, error handling, and health probes will execute automatically.
+
 
 
 

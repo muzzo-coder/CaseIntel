@@ -30,7 +30,9 @@ from app.schemas.case import (
 )
 from app.schemas.document import (
     DocumentResponse,
+    DocumentDetailResponse,
     DocumentListResponse,
+    DocumentStatistics,
 )
 from app.schemas.analysis import (
     SourceCitation,
@@ -62,7 +64,9 @@ __all__ = [
     "CaseListResponse",
     "CaseStatistics",
     "DocumentResponse",
+    "DocumentDetailResponse",
     "DocumentListResponse",
+    "DocumentStatistics",
     "SourceCitation",
     "CaseSummaryResponse",
     "IssueIdentificationResponse",

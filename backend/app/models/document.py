@@ -43,6 +43,11 @@ class Document(Base, TimestampMixin):
         String(255),
         nullable=False,
     )
+    original_filename: Mapped[str] = mapped_column(
+        String(255),
+        default="",
+        nullable=False,
+    )
     file_path: Mapped[str] = mapped_column(
         String(500),
         nullable=False,
@@ -50,6 +55,11 @@ class Document(Base, TimestampMixin):
     file_size: Mapped[int] = mapped_column(
         Integer,
         nullable=False,
+    )
+    file_hash: Mapped[Optional[str]] = mapped_column(
+        String(64),
+        nullable=True,
+        index=True,
     )
     mime_type: Mapped[str] = mapped_column(
         String(100),
@@ -86,6 +96,7 @@ class Document(Base, TimestampMixin):
 
     __table_args__ = (
         Index("ix_documents_case_user", "case_id", "user_id"),
+        Index("ix_documents_user_status", "user_id", "status"),
     )
 
     def __repr__(self) -> str:

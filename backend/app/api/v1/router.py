@@ -26,9 +26,16 @@ api_v1_router.include_router(
     tags=["Cases & Workspaces"],
 )
 
-# Case documents endpoints
+# Legal Document Management endpoints (Module 4)
 api_v1_router.include_router(
     documents.router,
+    prefix="/documents",
+    tags=["Legal Document Management"],
+)
+
+# Case documents endpoints
+api_v1_router.include_router(
+    documents.case_router,
     prefix="/cases",
     tags=["Case Documents"],
 )
@@ -39,5 +46,6 @@ api_v1_router.include_router(
     prefix="/cases",
     tags=["AI Case Analysis"],
 )
+
 
 

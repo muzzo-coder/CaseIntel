@@ -204,6 +204,61 @@ export const api = {
   },
 
   documents: {
+    uploadStandalone: (file, caseId = null) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      if (caseId) {
+        formData.append("case_id", caseId);
+      }
+      return request("/documents/upload", {
+        method: "POST",
+        body: formData,
+      });
+    },
+
+    listLibrary: (params = {}) => {
+      const query = new URLSearchParams();
+      if (params.page) query.append("page", params.page);
+      if (params.pageSize) query.append("page_size", params.pageSize);
+      if (params.search) query.append("search", params.search);
+      if (params.status) query.append("status", params.status);
+      if (params.fileType) query.append("file_type", params.fileType);
+      if (params.caseId) query.append("case_id", params.caseId);
+      const qs = query.toString();
+      return request(`/documents${qs ? `?${qs}` : ""}`, { method: "GET" });
+    },
+
+    getStats: () => request("/documents/stats", { method: "GET" }),
+
+    getById: (documentId) =>
+      request(`/documents/${documentId}`, { method: "GET" }),
+
+    deleteStandalone: (documentId) =>
+      request(`/documents/${documentId}`, {
+        method: "DELETE",
+      }),
+
+    download: async (documentId, filename = "document") => {
+      const token = localStorage.getItem("legalAI_token");
+      const url = `${API_BASE_URL}/documents/${documentId}/download`;
+      const response = await fetch(url, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to download file (Status ${response.status})`);
+      }
+      const blob = await response.blob();
+      const objectUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(objectUrl);
+      document.body.removeChild(a);
+    },
+
+    // Backward-compatible case-specific methods
     upload: (caseId, file) => {
       const formData = new FormData();
       formData.append("file", file);
